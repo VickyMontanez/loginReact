@@ -1,26 +1,21 @@
 import { SignJWT, jwtVerify } from "jose";
+import express from "express";
 import { con } from "../db/atlas.js";
 import dotenv from "dotenv";
 dotenv.config();
-const createToken = async (req, res, next) => {
+const createToken = express();
+
+createToken.get("/", async (req, res, next) => {
     try {
-        const connection = con();
-        const conexionDB = await connection.getDatabase();
+        const connection = await con();
         if (Object.keys(req.body).length === 0) {
             return res.status(400).send({ status: 400, message: "Data no sent :(" });
         }
         const { username, password } = req.body
-        const user = await conexionDB.collection("users").findOne({ "username": username });
-
-        if (!user) {
-            return res.status(401).send({ status: 401, message: `User ${user} not found` });
+        const user = await connection.collection('users').findOne({ username: username });
+        if (!user || user.password !== password) {
+            return res.status(401).json({ status: 401, message: 'Credenciales inválidas' });
         }
-        /*         const passwordMatch = await UserSchema.matchPassword( contraseña, usuario.contraseña);
-        
-                if (!passwordMatch) {
-                    return res.status(401).send({ message: "Contraseña incorrecta" });
-                } */
-
         const id = user._id.toString();
         const encoder = new TextEncoder();
 
@@ -29,18 +24,12 @@ const createToken = async (req, res, next) => {
             .setIssuedAt()
             .setExpirationTime("3h")
             .sign(encoder.encode(process.env.JWT_PRIVATE_KEY));
-
-        req.data = {
-            status: 200,
-            message: "Usuario encontrado!! Toma tu token :D",
-            token: jwtConstructor,
-        };
-        next();
+        return res.status(200).json({ status: 200, jwt: jwtConstructor });
     } catch (error) {
         console.error("Error de conexión a la base de datos:", error);
         return res.status(500).send({ status: 500, message: "Error interno del servidor" });
     }
-};
+});
 
 const validateToken = async (req, token) => {
     try {
