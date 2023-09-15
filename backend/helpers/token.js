@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const createToken = express();
 
-createToken.get("/", async (req, res, next) => {
+createToken.post("/", async (req, res, next) => {
     try {
         const connection = await con();
         if (Object.keys(req.body).length === 0) {
@@ -18,13 +18,16 @@ createToken.get("/", async (req, res, next) => {
         }
         const id = user._id.toString();
         const encoder = new TextEncoder();
-
         const jwtConstructor = await new SignJWT({ _id: id })
             .setProtectedHeader({ alg: "HS256", typ: "JWT" })
             .setIssuedAt()
             .setExpirationTime("3h")
             .sign(encoder.encode(process.env.JWT_PRIVATE_KEY));
-        return res.status(200).json({ status: 200, jwt: jwtConstructor });
+            const data = {
+                status: 200,
+                token: jwtConstructor,
+            };
+            res.status(200).json(data);
     } catch (error) {
         console.error("Error de conexión a la base de datos:", error);
         return res.status(500).send({ status: 500, message: "Error interno del servidor" });
