@@ -8,7 +8,7 @@ ReactDOM.createRoot(document.querySelector('#root')).render(
   <React.StrictMode>
     <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Formulary/>}></Route>
+          <Route path='/login' element={<Formulary/>}></Route>
           <Route path='/home' element={<Welcome/>}></Route>
         </Routes>
     </BrowserRouter>

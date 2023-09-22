@@ -1,15 +1,21 @@
 import express  from "express";
 import dotenv from "dotenv";
+import {loadEnv} from 'vite';
 import { createToken, validateToken } from "./helpers/token.js";
 import passport from "./helpers/passportHelper.js";
 import appUsers from "./routers/router.js";
 import cors from "cors"
+const env = loadEnv("development", process.cwd(), 'VITE')
+
 
 
 dotenv.config();
 
 const app = express();
-let config = JSON.parse(process.env.MY_CONFIG);
+let config = {
+    port: env.VITE_PORT_BACKEND,
+    hostname: env.VITE_HOSTNAME
+}
 app.use(express.json());
 app.use(cors());
 

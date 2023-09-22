@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function Formulary({ usuario, contraseña }) {
     const [username, setUsername] = useState(usuario);
     const [password, setPassword] = useState(contraseña);
@@ -14,7 +15,7 @@ export default function Formulary({ usuario, contraseña }) {
         setPassword(contraseña);
     
         try {
-            const response = await fetch("http://localhost:8118/login", {
+            const response = await fetch(`http://${import.meta.env.VITE_HOSTNAME}:${import.meta.env.VITE_PORT_FRONTEND}/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -29,7 +30,7 @@ export default function Formulary({ usuario, contraseña }) {
                 await response.json(); 
                 navigate("/home")
                 
-            } else {
+            } else{
                 alert("Nombre o contraseña erroneos!!");
             }
         } catch (error) {

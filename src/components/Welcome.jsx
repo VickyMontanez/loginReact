@@ -4,7 +4,7 @@ export default function Welcome (){
     return(
 
         <>
-            <h2>Bienvenidoooo</h2>
+            <h2>Entraste :)</h2>
         </>
 
     )
