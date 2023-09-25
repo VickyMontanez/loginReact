@@ -15,7 +15,7 @@ export default function Formulary({ usuario, contraseña }) {
         setPassword(contraseña);
     
         try {
-            const response = await fetch(`http://${import.meta.env.VITE_HOSTNAME}:${import.meta.env.VITE_PORT_FRONTEND}/login`, {
+            const response = await fetch(`http://${import.meta.env.VITE_HOSTNAME}:${import.meta.env.VITE_PORT_BACKEND}/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -27,7 +27,10 @@ export default function Formulary({ usuario, contraseña }) {
             });
     
             if (response.ok) {
-                await response.json(); 
+                const data = await response.json(); 
+                const authToken = data.token; 
+                setToken(authToken);
+                navigate("/home")
                 navigate("/home")
                 
             } else{

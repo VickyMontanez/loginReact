@@ -1,0 +1,44 @@
+use("db_user_login");
+
+db.createCollection("users", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["id","username", "password", "role"],
+            properties: {
+                id:{
+                    bsonType:"number",
+                    description: "_id is required"
+                },
+                username: {
+                    bsonType: "string",
+                    description: "Username is required"
+                },
+                password: {
+                    bsonType: "string",
+                    description: "Password is required",
+                    pattern: "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,}$",
+                },
+                role: {
+                    bsonType: "string",
+                    description: "Role is required"
+                }
+            }
+        }
+    }
+});
+
+db.users.insertMany([
+    {
+        id: 1,
+        username: "admin",
+        password: "password123",
+        role: "admin"
+    },
+    {
+        id: 2,
+        username: "paco1234",
+        password: "paco1234789*",
+        role: "user"
+    }
+]);
